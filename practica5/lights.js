@@ -1,21 +1,24 @@
 function setLights() {
-    const ambientLight = new THREE.AmbientLight(0x404040);
-    scene.add(ambientLight);
+    // Luces
+	var ambiental = new THREE.AmbientLight(0xFFFFFF, 0.7)
+	scene.add( ambiental )
 
-    const directionalLight = new THREE.DirectionalLight('white', 0.4);
-    directionalLight.position.set(0, 1, 0);
-    scene.add(directionalLight);
+	var puntual = new THREE.PointLight(0xFFFFFF,0.9)
+	puntual.position.set( 150, 200, 150 )
+	scene.add( puntual )
 
-    const spotLight = new THREE.SpotLight('white', 0.6);
-    spotLight.position.set(300, 800, 300);
-    spotLight.target.position.set(400, 1600, 400);
-    spotLight.angle = Math.PI / 8;
-    spotLight.penumbra = 1;
+	var direccional = new THREE.DirectionalLight(0xFFFFFF,0.5)
+	direccional.position.set(-100,150,100 )
+	scene.add(direccional)
 
-    spotLight.shadow.camera.near = 100;
-    spotLight.shadow.camera.far = 2500;
-    spotLight.shadow.camera.fov = 60;
+	var focal = new THREE.SpotLight(0xFFFFFF,0.5)
+	focal.position.set( 400,200,3 )
+	focal.target.position.set(0,0,0)
+	focal.angle = Math.PI/3
+	focal.castShadow = true
 
-    spotLight.castShadow = true;
-    scene.add(spotLight);
+	focal.shadow.camera.near = 1
+	focal.shadow.camera.far = 1000
+	focal.shadow.camera.fov = 100
+	scene.add(focal)
 }

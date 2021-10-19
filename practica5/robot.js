@@ -3,6 +3,8 @@ let mano_object, antebrazo_object, brazo_object, base_object, pinza_1_object, pi
 function base(material) {
     const cylinder_geometry = new THREE.CylinderGeometry(50, 50, 15, 32)
     const cylinder = new THREE.Mesh(cylinder_geometry, material)
+    cylinder.castShadow = true;
+    cylinder.receiveShadow = true;
 
     return cylinder
 }
@@ -12,6 +14,8 @@ function eje(material) {
     const cylinder = new THREE.Mesh(cylinder_geometry, material)
 
     cylinder.rotation.x = -Math.PI / 2
+    cylinder.receiveShadow = true;
+    cylinder.castShadow = true;
 
     return cylinder
 }
@@ -19,13 +23,17 @@ function eje(material) {
 function esparrago(material) {
     const box_geometry = new THREE.BoxGeometry(18, 120, 12)
     const box = new THREE.Mesh(box_geometry, material)
+    box.receiveShadow = true;
+    box.castShadow = true;
 
     return box
 }
 
 function rotula(material) {
     const geometry = new THREE.SphereGeometry(20, 20, 20);
-    const sphere = new THREE.Mesh(geometry, material);
+    const sphere = new THREE.Mesh(geometry, shiny);
+    sphere.receiveShadow = true;
+    sphere.castShadow = true;
 
     return sphere
 }
@@ -33,6 +41,8 @@ function rotula(material) {
 function disco(material) {
     const cylinder_geometry = new THREE.CylinderGeometry(22, 22, 6, 32)
     const cylinder = new THREE.Mesh(cylinder_geometry, material)
+    cylinder.receiveShadow = true;
+    cylinder.castShadow = true;
 
     return cylinder
 }
@@ -40,6 +50,8 @@ function disco(material) {
 function nervio(material) {
     const box_geometry = new THREE.BoxGeometry(4, 80, 4)
     const box = new THREE.Mesh(box_geometry, material)
+    box.receiveShadow = true;
+    box.castShadow = true;
 
     return box
 }
@@ -63,6 +75,8 @@ function nervios(material) {
     nervios.add(nervio_mesh_2)
     nervios.add(nervio_mesh_3)
     nervios.add(nervio_mesh_4)
+    nervios.receiveShadow = true;
+    nervios.castShadow = true;
 
     return nervios
 }
@@ -71,12 +85,19 @@ function palma(material) {
     const cylinder_geometry = new THREE.CylinderGeometry(15, 15, 40, 32)
     const cylinder = new THREE.Mesh(cylinder_geometry, material)
 
+    cylinder.receiveShadow = true;
+    cylinder.castShadow = true;
+
+
     return cylinder
 }
 
 function pinza_atras(material) {
     const box_geometry = new THREE.BoxGeometry(4, 20, 19)
     const box = new THREE.Mesh(box_geometry, material)
+
+    box.receiveShadow = true;
+    box.castShadow = true;
 
     return box
 }
@@ -103,14 +124,18 @@ function trapezoid(material) {
     const total_coordiantes = coordinates_base_1.concat(coordinates_base_2)
 
     const indices = [
-        4, 5, 1,
-        0, 1, 4,
-        0, 4, 3,
-        3, 4, 7,
-        3, 2, 7,
-        7, 6, 2,
-        2, 1, 5,
-        6, 5, 2,
+        7, 3, 4, // 2
+        3, 8, 4, // 2
+        2, 6, 1, // 1
+        6, 5, 1, // 1
+        2, 3, 6, // 3
+        3, 7, 6, // 3
+        6, 7, 5, // 4
+        7, 4, 5, // 4
+        8, 1, 4, // 5
+        4, 1, 5, // 5
+        3, 2, 1, // 6
+        3, 1, 8  // 6
     ]
 
     for (let i = 0; i < total_coordiantes.length; i += 3) {
@@ -123,7 +148,12 @@ function trapezoid(material) {
         trapezoid.faces.push(face);
     }
 
-    return new THREE.Mesh(trapezoid, material);
+    const res = new THREE.Mesh(trapezoid, new THREE.MeshBasicMaterial({ color: 'white' }));
+
+    res.receiveShadow = true
+    res.castShadow = true
+
+    return res
 }
 
 function pinza(material) {
@@ -136,6 +166,9 @@ function pinza(material) {
 
     mano.add(pinza_atras_mesh)
     mano.add(trapezoid_mesh)
+
+    mano.castShadow = true;
+    mano.receiveShadow = true;
 
     return mano
 }
@@ -153,11 +186,17 @@ function mano(material) {
     pinza_1_object.position.set(10, 0, 19)
     pinza_2_object.position.set(-10, 0, 19)
 
-    pinza_2_object.rotation = Math.PI
+    const scale = new THREE.Vector3(1, 1, 1);
+    scale.x *= -1;
+    pinza_2_object.scale.multiply(scale);
 
     mano_object.add(palma_mesh)
     mano_object.add(pinza_1_object)
     mano_object.add(pinza_2_object)
+
+    mano_object.castShadow = true;
+    mano_object.receiveShadow = true;
+
 
     return mano_object
 }
@@ -177,6 +216,9 @@ function antebrazo(material) {
     antebrazo_object.add(disco_mesh)
     antebrazo_object.add(nervios_mesh)
     antebrazo_object.add(mano_object)
+
+    antebrazo_object.castShadow = true;
+    antebrazo_object.receiveShadow = true;
 
     return antebrazo_object
 }
@@ -201,14 +243,20 @@ function brazo(material) {
 
     brazo_object.add(antebrazo_object)
 
+    brazo_object.castShadow = true;
+    brazo_object.receiveShadow = true;
+
     return brazo_object
 }
 
 function robot(material) {
     base_object = new THREE.Object3D()
 
-    base_object.add(base(material))
-    base_object.add(brazo(material))
+    base_object.add(base(steel))
+    base_object.add(brazo(steel))
+
+    base_object.castShadow = true;
+    base_object.receiveShadow = true;
 
     return base_object
 }

@@ -122,14 +122,18 @@ function trapezoid(material) {
     const total_coordiantes = coordinates_base_1.concat(coordinates_base_2)
 
     const indices = [
-        4,  5,  1, 
-        0,  1,  4, 
-        0,  4,  3, 
-        3,  4,  7, 
-        3,  2,  7, 
-        7,  6,  2, 
-        2,  1,  5, 
-        6,  5,  2, 
+        7, 3, 4, // 2
+        3, 8, 4, // 2
+        2, 6, 1, // 1
+        6, 5, 1, // 1
+        2, 3, 6, // 3
+        3, 7, 6, // 3
+        6, 7, 5, // 4
+        7, 4, 5, // 4
+        8, 1, 4, // 5
+        4, 1, 5, // 5
+        3, 2, 1, // 6
+        3, 1, 8  // 6
     ]
 
     for (let i = 0; i < total_coordiantes.length; i += 3) {
@@ -172,7 +176,9 @@ function mano(material) {
     pinza_1_object.position.set(10, 0, 19)
     pinza_2_object.position.set(-10, 0, 19)
 
-    pinza_2_object.rotation = Math.PI
+        const scale = new THREE.Vector3(1, 1, 1);
+    scale.x *= -1;
+    pinza_2_object.scale.multiply(scale);
 
     mano.add(palma_mesh)
     mano.add(pinza_1_object)

@@ -9,9 +9,10 @@ render()
 function init() {
     renderer = new THREE.WebGLRenderer()
     renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.setClearColor(new THREE.Color(0xFFFFFF))
+    renderer.setClearColor(new THREE.Color(0x000000))
     document.getElementById('container').appendChild(renderer.domElement)
     renderer.autoClear = false
+    renderer.shadowMap.enabled = true
 
     scene = new THREE.Scene()
 
@@ -45,13 +46,27 @@ function init() {
 function loadScene() {
     const material = new THREE.MeshBasicMaterial({ color: 'red', wireframe: true })
 
-    const suelo = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10), steel)
+    const suelo = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10), water)
     suelo.rotation.x = -Math.PI / 2
+    suelo.receiveShadow = true;
+
+    const shader = THREE.ShaderLib.cube;
+    shader.uniforms.tCube.value = room_map
+
+    wall_shader = new THREE.ShaderMaterial({
+        fragmentShader: shader.fragmentShader,
+        vertexShader: shader.vertexShader,
+        uniforms: shader.uniforms,
+        side: THREE.BackSide
+    })
+
+    const room = new THREE.Mesh(new THREE.CubeGeometry(10000, 10000, 10000), wall_shader)
 
     scene.add(suelo)
     scene.add(new THREE.AxesHelper(3))
 
     scene.add(robot(material))
+    scene.add(room)
 }
 
 
