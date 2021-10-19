@@ -18,7 +18,7 @@ if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
 				mixer = new THREE.AnimationMixer( scene );
 				var loader = new THREE.JSONLoader();
-				loader.load( 'models/blender/monster/monster.json', function ( geometry, materials ) {
+				loader.load( 'https://agranadosb.github.io/proyecto_final/models/blender/monster/monster.json', function ( geometry, materials ) {
 					var material = materials[ 0 ];
 					material.morphTargets = true;
 					material.color.setHex( 0xffaaaa );
