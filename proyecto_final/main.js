@@ -1,5 +1,5 @@
 let renderer, scene, camera, floor_plan, mixer, clock
-const L = 200
+const L = 700
 let finish = false
 let controls
 init()

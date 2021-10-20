@@ -5,8 +5,9 @@ const steel = new THREE.MeshLambertMaterial({
     side: THREE.DoubleSide
 })
 
-const water_texture = new THREE.TextureLoader().load("https://agranadosb.github.io/practica5/images/wet_ground.jpg")
-
+const water_texture = new THREE.TextureLoader().load("https://agranadosb.github.io/practica5/images/istockphoto-1043818774-170667a.png")
+water_texture.wrapS = water_texture.wrapT = THREE.RepeatWrapping; 
+water_texture.repeat.set( 20, 20 );
 const water = new THREE.MeshLambertMaterial({
     map: water_texture,
     side: THREE.DoubleSide
@@ -20,12 +21,12 @@ const wood = new THREE.MeshPhongMaterial({
 })
 
 const room_map = new THREE.CubeTextureLoader().load([
-    'https://agranadosb.github.io/practica5/images/posx.jpg',
-    'https://agranadosb.github.io/practica5/images/negx.jpg',
-    'https://agranadosb.github.io/practica5/images/posy.jpg',
-    'https://agranadosb.github.io/practica5/images/negy.jpg',
-    'https://agranadosb.github.io/practica5/images/posz.jpg',
-    'https://agranadosb.github.io/practica5/images/negz.jpg',
+    'https://agranadosb.github.io/practica5/images/pisometal_1024x1024.jpg',
+    'https://agranadosb.github.io/practica5/images/pisometal_1024x1024.jpg',
+    'https://agranadosb.github.io/practica5/images/pisometal_1024x1024.jpg',
+    'https://agranadosb.github.io/practica5/images/pisometal_1024x1024.jpg',
+    'https://agranadosb.github.io/practica5/images/pisometal_1024x1024.jpg',
+    'https://agranadosb.github.io/practica5/images/pisometal_1024x1024.jpg',
 ])
 
 const shiny = new THREE.MeshPhongMaterial({
