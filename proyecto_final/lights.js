@@ -12,7 +12,7 @@ function setLights() {
 	scene.add(direccional)
 
 	var focal = new THREE.SpotLight(0xFFFFFF,0.5)
-	focal.position.set( 1000,200,3 )
+	focal.position.set( 0,1000, 0 )
 	focal.target.position.set(0,0,0)
 	focal.angle = Math.PI/3
 	focal.castShadow = true

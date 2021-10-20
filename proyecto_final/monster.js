@@ -6,7 +6,7 @@ function loadMonster() {
         const material = materials[0];
         material.morphTargets = true;
         material.color.setHex(0xffaaaa);
-        monster = new THREE.Mesh(geometry, materials);
+        const monster = new THREE.Mesh(geometry, materials);
         const x = THREE.Math.randInt(800, -800);
         const z = THREE.Math.randInt(800, -800);
         monster.position.set(x, 20, z);
@@ -16,6 +16,9 @@ function loadMonster() {
         monster.updateMatrix();
 
         monster.rotation.y = -Math.PI / 2
+
+        monster.castShadow = true;
+        monster.receiveShadow = true;
 
         scene.add(monster);
         mixer.clipAction(geometry.animations[0], monster, 10)

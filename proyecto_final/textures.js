@@ -5,9 +5,8 @@ const steel = new THREE.MeshLambertMaterial({
     side: THREE.DoubleSide
 })
 
-const water_texture = new THREE.TextureLoader().load("https://agranadosb.github.io/practica5/images/istockphoto-1043818774-170667a.png")
-water_texture.wrapS = water_texture.wrapT = THREE.RepeatWrapping; 
-water_texture.repeat.set( 20, 20 );
+const water_texture = new THREE.TextureLoader().load("https://agranadosb.github.io/practica5/images/istockphoto-1043818774-170667a.jpg")
+
 const water = new THREE.MeshLambertMaterial({
     map: water_texture,
     side: THREE.DoubleSide
