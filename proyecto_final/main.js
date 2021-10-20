@@ -1,120 +1,194 @@
-if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-			var container, stats, clock, mixer;
-			var camera, scene, renderer, objects;
-			init();
-			animate();
+let renderer, scene, camera, floor_plan, mixer, clock
+const L = 200
+let finish = false
+let controls
+init()
+setupGUI()
+loadScene()
+render()
 
-			function init() {
+function init() {
+    renderer = new THREE.WebGLRenderer()
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setClearColor(new THREE.Color(0x000000))
+    document.getElementById('container').appendChild(renderer.domElement)
+    renderer.autoClear = false
+    renderer.shadowMap.enabled = true
 
-				container = document.getElementById( 'container' );
+    scene = new THREE.Scene()
 
-				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 2000 );
-				camera.position.set( 2, 4, 2 );
+    mixer = new THREE.AnimationMixer(scene);
+    clock = new THREE.Clock();
 
-				clock = new THREE.Clock();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000)
+    camera.position.set(0.5, 200, 150)
+    camera.lookAt(new THREE.Vector3(0, 60, 0))
 
-				scene = new THREE.Scene();
-				scene.fog = new THREE.FogExp2( 0x000000, 0.035 );
+    controls = new THREE.OrbitControls(camera, renderer.domElement)
+    controls.target.set(0, 0, 0)
 
-				mixer = new THREE.AnimationMixer( scene );
-				var loader = new THREE.JSONLoader();
-				loader.load( 'https://agranadosb.github.io/proyecto_final/models/blender/monster/monster.json', function ( geometry, materials ) {
-					var material = materials[ 0 ];
-					material.morphTargets = true;
-					material.color.setHex( 0xffaaaa );
-					var mesh = new THREE.Mesh( geometry, materials );
-					mesh.position.set( 1, 0, 1 );
+    controls.keys = {
+        LEFT: 'KeyA',
+        UP: 'KeyW',
+        RIGHT: 'KeyD',
+        BOTTOM: 'KeyS'
+    }
 
-					var s = THREE.Math.randFloat( 0.00075, 0.001 );
-					mesh.scale.set( s, s, s );
-					mesh.rotation.y = THREE.Math.randFloat( -0.25, 0.25 );
-					mesh.matrixAutoUpdate = false;
-					mesh.updateMatrix();
+    floor_plan = new THREE.OrthographicCamera(-L, L, L, -L)
 
-					scene.add( mesh );
-					// let a = []
-					// let b = []
-					// let result = []
-					//
-					// for(let i = 0; i< geometry.animations[0].tracks.length;i++)
-					// {
-					// 		if(i< 0.3*geometry.animations[0].tracks.length) {
-					// 			a.push(geometry.animations[0].tracks[i])
-					// 		} else if( i> 0.8*geometry.animations[0].tracks.length){
-					// 			b.push(geometry.animations[0].tracks[i])
-					// 		}else {
-					// 			result.push(geometry.animations[0].tracks[i])
-					// 		}
-					// }
-					// geometry.animations[0].tracks = a;
-					// geometry.animations[0].duration /=2.0;
-					mixer.clipAction( geometry.animations[ 0 ], mesh ,10 )
-							.setDuration(2)   // one second
-							.startAt( 0 )	//  (already running)
-							.play();	// let's go
-				} );
+    floor_plan.position.set(0, 1000, 0)
+    floor_plan.lookAt(new THREE.Vector3(0, 0, 0))
 
-				// lights
+    scene.add(floor_plan)
 
-				var ambientLight = new THREE.AmbientLight( 0xcccccc );
-				scene.add( ambientLight );
+    window.addEventListener('resize', repair_ratio)
+    document.addEventListener('keydown', keyboard)
 
-				var pointLight = new THREE.PointLight( 0xff4400, 5, 30 );
-				pointLight.position.set( 5, 0, 0 );
-				scene.add( pointLight );
+    setLights()
+}
 
-				// renderer
+function loadScene() {
+    const material = new THREE.MeshBasicMaterial({ color: 'red', wireframe: true })
 
-				renderer = new THREE.WebGLRenderer();
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
+    const suelo = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000, 10, 10), water)
+    suelo.rotation.x = -Math.PI / 2
+    suelo.receiveShadow = true;
 
-				// stats
+    const shader = THREE.ShaderLib.cube;
+    shader.uniforms.tCube.value = room_map
 
-				stats = new Stats();
-				container.appendChild( stats.dom );
+    wall_shader = new THREE.ShaderMaterial({
+        fragmentShader: shader.fragmentShader,
+        vertexShader: shader.vertexShader,
+        uniforms: shader.uniforms,
+        side: THREE.BackSide
+    })
 
-				// events
+    const room = new THREE.Mesh(new THREE.CubeGeometry(10000, 10000, 10000), wall_shader)
 
-				window.addEventListener( 'resize', onWindowResize, false );
+    scene.add(suelo)
+    scene.add(new THREE.AxesHelper(3))
 
-			}
+    scene.add(robot(material))
+    scene.add(room)
 
-			//
+    loadMonster()
+}
 
-			function onWindowResize( event ) {
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
+function repair_ratio() {
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+}
 
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
 
-			}
+function update() {
+    transform()
+}
 
-			//
+let xvalue = 0.5
 
-			function animate() {
 
-				requestAnimationFrame( animate );
+function render() {
+    if (finish) {
+        return
+    }
+    mixer.update(clock.getDelta());
 
-				render();
-				stats.update();
+    requestAnimationFrame(render)
+    update()
+    renderer.clear()
 
-			}
+    small = window.innerHeight
+    if (window.innerWidth <= window.innerHeight) {
+        small = window.innerWidth
+    }
+    renderer.setViewport(0, 0, small / 4, small / 4)
+    floor_plan.position.set(base_object.position.x, 1000, base_object.position.z)
+    floor_plan.lookAt(new THREE.Vector3(base_object.position.x, 0, base_object.position.z))
+    renderer.render(scene, floor_plan)
 
-			function render() {
+    renderer.setViewport(0, 0, window.innerWidth, window.innerHeight)
+    
+    const new_monsters = []
+    for (let index = 0; index < monsters.length; index++) {
+        const monster = monsters[index];
 
-				var timer = Date.now() * 0.0005;
+        monster.position.x += (base_object.position.x - monster.position.x) * 0.005;
+        monster.position.z += (base_object.position.z - monster.position.z) * 0.005;
+        monster.lookAt(base_object.position.x, 0, base_object.position.z)
+        monster.rotateY(-Math.PI / 2)
 
-				camera.position.x = Math.cos( timer ) * 10;
-				//camera.position.y = 4;
-				camera.position.z = Math.sin( timer ) * 10;
+        factor = 100
 
-				mixer.update( clock.getDelta() );
+        monster_position = new THREE.Vector3()
+        monster.getWorldPosition(monster_position)
+        pinza_object_position = new THREE.Vector3()
+        pinza_object.getWorldPosition(pinza_object_position)
 
-				camera.lookAt( scene.position );
+        deleted = false
+        if (Math.abs(monster_position.x - pinza_object_position.x) < factor) {
+            if (Math.abs(monster_position.y - pinza_object_position.y) < factor) {
+                if (Math.abs(monster_position.z - pinza_object_position.z) < factor) {
+                    removeObject3D(monster)
+                    deleted = true
+                    effectController.muertes += 1
+                    gui.updateDisplay()
+                }
+            }
+        }
 
-				renderer.render( scene, camera );
 
-			}
+        factor2 = 100
+
+        if (!deleted) {
+            base_object_position = new THREE.Vector3()
+            base_object.getWorldPosition(base_object_position)
+
+            if (Math.abs(monster_position.x - base_object_position.x) < factor2) {
+                if (Math.abs(monster_position.y - base_object_position.y) < factor2) {
+                    if (Math.abs(monster_position.z - base_object_position.z) < factor2) {
+                        alert("Has Perdido!")
+                        finish = true
+                        window.location.reload()
+                    }
+                }
+            }
+        }
+
+
+        if (!deleted) {
+            new_monsters.push(monster)
+        }
+    }
+    monsters = new_monsters
+
+    if (THREE.Math.randInt(1, 500) <= 2 + effectController.muertes) {
+        loadMonster()
+    }
+    
+    renderer.render(scene, camera)
+}
+
+function removeObject3D(object) {
+    if (!(object instanceof THREE.Object3D)) return false;
+    // for better memory management and performance
+    if (object.geometry) {
+        object.geometry.dispose();
+    }
+    if (object.material) {
+        if (object.material instanceof Array) {
+            // for better memory management and performance
+            object.material.forEach(material => material.dispose());
+        } else {
+            // for better memory management and performance
+            object.material.dispose();
+        }
+    }
+    if (object.parent) {
+        object.parent.remove(object);
+    }
+    // the parent might be the scene or another Object3D, but it is sure to be removed this way
+    return true;
+}
