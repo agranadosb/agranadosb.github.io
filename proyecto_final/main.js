@@ -1,4 +1,4 @@
-let renderer, scene, camera, floor_plan, mixer, clock
+let renderer, scene, camera, floor_plan, mixer, clock, stats
 const L = 700
 let finish = false
 let controls
@@ -44,6 +44,10 @@ function init() {
     window.addEventListener('resize', repair_ratio)
     document.addEventListener('keydown', keyboard)
 
+    stats = new Stats();
+    stats.domElement.style.cssText = 'position:absolute;bottom:0px;left:0px;';
+    container.appendChild( stats.dom );
+
     setLights()
 }
 
@@ -85,6 +89,7 @@ function repair_ratio() {
 
 function update() {
     transform()
+    stats.update()
 }
 
 let xvalue = 0.5
