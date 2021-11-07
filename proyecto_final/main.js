@@ -47,7 +47,7 @@ function init() {
 
     stats = new Stats();
     stats.domElement.style.cssText = 'position:absolute;bottom:0px;left:0px;';
-    container.appendChild( stats.dom );
+    container.appendChild(stats.dom);
 
     setLights()
 }
@@ -78,6 +78,21 @@ function loadScene() {
     scene.add(room)
 
     loadMonster()
+
+    var loader = new THREE.GLTFLoader();
+    loader.load(
+        "Night_Fury.blend",
+        function (gltf) {
+            var scale = 5.6;
+            bus.body = gltf.scene.children[0];
+            bus.body.name = "body";
+            bus.body.rotation.set(0, -1.5708, 0);
+            bus.body.scale.set(scale, scale, scale);
+            bus.body.position.set(0, 3.6, 0);
+            bus.body.castShadow = true;
+            bus.frame.add(bus.body);
+        },
+    );
 }
 
 
@@ -121,9 +136,6 @@ function render() {
         return
     }
 
-    var ratamahatta = new MD2CharacterRatmahatta()
-    scene.add(ratamahatta.character.object3d)
-    
     const new_monsters = []
     for (let index = 0; index < monsters.length; index++) {
         const monster = monsters[index];
@@ -183,7 +195,7 @@ function render() {
 
     camera.position.set(base_object.position.x - 1000, base_object.position.y + 1000, base_object.position.z)
     camera.lookAt(new THREE.Vector3(base_object.position.x, base_object.position.y, base_object.position.z))
-    
+
     renderer.render(scene, camera)
 }
 
