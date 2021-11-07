@@ -43,6 +43,8 @@ function setupGUI() {
     var folder2 = gui.addFolder("Juego")
 
     folder2.add(effectController, "muertes", 0).name("Muertes")
+
+    gui.close()
 }
 
 function transform() {

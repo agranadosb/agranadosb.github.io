@@ -39,7 +39,7 @@ function init() {
 
     floor_plan.position.set(0, 1000, 0)
     floor_plan.lookAt(new THREE.Vector3(0, 0, 0))
-
+    
     scene.add(floor_plan)
 
     window.addEventListener('resize', repair_ratio)
@@ -78,7 +78,6 @@ function loadScene() {
     scene.add(room)
 
     loadMonster()
-    loadAlduin()
 }
 
 
@@ -112,6 +111,7 @@ function render() {
     renderer.setViewport(0, 0, small / 4, small / 4)
     floor_plan.position.set(base_object.position.x, 1000, base_object.position.z)
     floor_plan.lookAt(new THREE.Vector3(base_object.position.x, 0, base_object.position.z))
+    floor_plan.rotation.z = -Math.PI / 2
     renderer.render(scene, floor_plan)
 
     renderer.setViewport(0, 0, window.innerWidth, window.innerHeight)
@@ -145,6 +145,7 @@ function render() {
                     removeObject3D(monster)
                     deleted = true
                     effectController.muertes += 1
+                    document.getElementById("puntos").innerText = effectController.muertes
                     gui.updateDisplay()
                 }
             }
