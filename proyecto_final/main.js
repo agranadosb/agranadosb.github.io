@@ -78,21 +78,7 @@ function loadScene() {
     scene.add(room)
 
     loadMonster()
-
-    var loader = new THREE.GLTFLoader();
-    loader.load(
-        "https://agranadosb.github.io/proyecto_final/Night_Fury.blend",
-        function (gltf) {
-            var scale = 5.6;
-            bus.body = gltf.scene.children[0];
-            bus.body.name = "body";
-            bus.body.rotation.set(0, -1.5708, 0);
-            bus.body.scale.set(scale, scale, scale);
-            bus.body.position.set(0, 3.6, 0);
-            bus.body.castShadow = true;
-            bus.frame.add(bus.body);
-        },
-    );
+    loadAlduin()
 }
 
 

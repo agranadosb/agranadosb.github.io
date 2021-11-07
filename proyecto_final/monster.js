@@ -31,3 +31,14 @@ function loadMonster() {
         monsters.push(monster)
     });
 }
+
+function loadAlduin() {
+    const loader = new THREE.JSONLoader();
+    loader.load('https://agranadosb.github.io/proyecto_final/models/alduin/alduin-dragon.json', function (geometry, materials) {
+        const material = materials[0];
+        material.morphTargets = true;
+        material.color.setHex(0xffaaaa);
+        const monster = new THREE.Mesh(geometry, materials);
+        monsters.push(monster)
+    });
+}
