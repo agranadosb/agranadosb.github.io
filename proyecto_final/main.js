@@ -81,7 +81,7 @@ function loadScene() {
 
     var loader = new THREE.GLTFLoader();
     loader.load(
-        "Night_Fury.blend",
+        "https://agranadosb.github.io/proyecto_final/Night_Fury.blend",
         function (gltf) {
             var scale = 5.6;
             bus.body = gltf.scene.children[0];
