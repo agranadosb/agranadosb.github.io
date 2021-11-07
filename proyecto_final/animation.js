@@ -1,7 +1,19 @@
+let start = false
+let pause = true
+
 const left_arrow = 37
 const up_arrow = 38
 const right_arrow = 39
 const down_arrow = 40
+
+const a_key = 65
+const d_key = 68
+const w_key = 87
+const s_key = 83
+const q_key = 81
+const e_key = 69
+
+const esc_key = 27
 let gui
 
 function setupGUI() {
@@ -44,19 +56,54 @@ function transform() {
 }
 
 function keyboard(event) {
-    if (event.keyCode == left_arrow) {
-        base_object.position.x -= 10
+    if (event.keyCode == esc_key) {
+        if (!start) {
+            start = true
+            info_div.remove()
+        } else {
+            start = false
+            document.getElementById('body').appendChild(info_div)
+        }
+    }
+
+    if (!start) {
         return
     }
-    if (event.keyCode == right_arrow) {
-        base_object.position.x += 10
+
+    if (event.keyCode == down_arrow) {
+        base_object.position.x -= 20
         return
     }
     if (event.keyCode == up_arrow) {
-        base_object.position.z -= 10
+        base_object.position.x += 20
         return
     }
-    if (event.keyCode == down_arrow) {
-        base_object.position.z += 10
+    if (event.keyCode == left_arrow) {
+        base_object.position.z -= 20
+        return
+    }
+    if (event.keyCode == right_arrow) {
+        base_object.position.z += 20
+    }
+
+    if (event.keyCode == a_key) {
+        effectController.rotation_base += Math.PI
+    }
+    if (event.keyCode == d_key) {
+        effectController.rotation_base -= Math.PI
+    }
+
+    if (event.keyCode == w_key && brazo_object.rotation.z < Math.PI / 4) {
+        effectController.rotation_arm += Math.PI
+    }
+    if (event.keyCode == s_key && brazo_object.rotation.z > -Math.PI / 4) {
+        effectController.rotation_arm -= Math.PI
+    }
+
+    if (event.keyCode == q_key) {
+        effectController.rotation_frontarm_y += Math.PI
+    }
+    if (event.keyCode == e_key) {
+        effectController.rotation_frontarm_z -= Math.PI
     }
 }

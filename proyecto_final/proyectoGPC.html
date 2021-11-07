@@ -17,20 +17,39 @@
 			position: absolute;
 			top: 0px;
 			width: 100%;
+			height: 100%;
 			padding: 5px;
 			text-align: center;
 			color: #fff;
+			background-color: rgba(0, 0, 0, 0.5);
 		}
 	</style>
 </head>
 
-<body>
+<body id="body">
+	<div id="info">
+		<h1>Pulsa esc para empezar</span>
+			<div>
+				<h2>Controles</h2>
+				<div>
+					<p>Mover robot: flechas</p>
+					<p>Girar robot: teclas a y d</p>
+					<p>Mover brazo: teclas w y s</p>
+					<p>Mover rótula: teclas q y e</p>
+					<p>Parar juego: tecla esc</p>
+				</div>
+			</div>
+	</div>
 	<div id="container"></div>
 	<script src="lib/three.min_r96.js"></script>
 	<script src="lib/dat.gui.min.js"></script>
 	<script src="lib/OrbitControls.js"></script>
 	<script src="lib/Detector.js"></script>
 	<script src="lib/stats.min.js"></script>
+	<script src='boss/threex.md2character.js'></script>
+	<script src='boss/threex.md2characterratmahatta.js'></script>
+	<script src='boss/threex.md2charactercontrols.js'></script>
+	<script src='boss/threex.md2character.js'></script>
 	<script src="monster.js"></script>
 	<script src="textures.js"></script>
 	<script src="lights.js"></script>

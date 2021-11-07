@@ -1,4 +1,5 @@
 let renderer, scene, camera, floor_plan, mixer, clock, stats
+const info_div = document.getElementById('info')
 const L = 700
 let finish = false
 let controls
@@ -96,14 +97,12 @@ let xvalue = 0.5
 
 
 function render() {
-    if (finish) {
-        return
-    }
+    update()
+    renderer.clear()
+
     mixer.update(clock.getDelta());
 
     requestAnimationFrame(render)
-    update()
-    renderer.clear()
 
     small = window.innerHeight
     if (window.innerWidth <= window.innerHeight) {
@@ -115,6 +114,15 @@ function render() {
     renderer.render(scene, floor_plan)
 
     renderer.setViewport(0, 0, window.innerWidth, window.innerHeight)
+
+    if (finish || !start) {
+        renderer.render(scene, camera)
+
+        return
+    }
+
+    var ratamahatta = new MD2CharacterRatmahatta()
+    scene.add(ratamahatta.character.object3d)
     
     const new_monsters = []
     for (let index = 0; index < monsters.length; index++) {
@@ -172,6 +180,9 @@ function render() {
     if (THREE.Math.randInt(1, 500) <= 2 + effectController.muertes) {
         loadMonster()
     }
+
+    camera.position.set(base_object.position.x - 1000, base_object.position.y + 1000, base_object.position.z)
+    camera.lookAt(new THREE.Vector3(base_object.position.x, base_object.position.y, base_object.position.z))
     
     renderer.render(scene, camera)
 }

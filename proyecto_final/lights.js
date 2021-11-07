@@ -1,17 +1,17 @@
 function setLights() {
     // Luces
-	var ambiental = new THREE.AmbientLight(0xFFFFFF, 0.2)
+	var ambiental = new THREE.AmbientLight(0xFFFFFF, 0)
 	scene.add( ambiental )
 
-	var puntual = new THREE.PointLight(0xFFFFFF,0.3)
+	var puntual = new THREE.PointLight(0xFFFFFF,0.5)
 	puntual.position.set( 150, 200, 150 )
 	scene.add( puntual )
 
-	var direccional = new THREE.DirectionalLight(0xFFFFFF,0.5)
+	var direccional = new THREE.DirectionalLight(0xFFFFFF,0.1)
 	direccional.position.set(-100,150,100 )
 	scene.add(direccional)
 
-	var focal = new THREE.SpotLight(0xFFFFFF,0.5)
+	var focal = new THREE.SpotLight(0xFFFFFF,0.2)
 	focal.position.set( 0,1000, 0 )
 	focal.target.position.set(0,0,0)
 	focal.angle = Math.PI/3
